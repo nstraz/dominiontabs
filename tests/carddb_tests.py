@@ -76,6 +76,17 @@ def test_cardread():
     assert len(cards) == num_cards_expected + 28
 
 
+def test_no_duplicates():
+    from collections import Counter
+
+    options = main.parse_opts([])
+    options.data_path = "."
+    c = Counter((c.card_tag, c.cardset_tag) for c in main.read_card_data(options))
+    for (card_tag, cardset_tag) in (x for x in c if c[x] > 1):
+        print(f"Duplicate: {card_tag} in {cardset_tag}")
+    assert len(c) == c.total()
+
+
 def test_languages():
     languages = main.get_languages("card_db")
     for lang in languages:
